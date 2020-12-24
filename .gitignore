@@ -130,7 +130,7 @@ dmypy.json
 
 
 # Custom file types
-.pt
-.txt
-.pkl
-.csv
+*.pt
+*.txt
+*.pkl
+*.csv
