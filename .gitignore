@@ -134,3 +134,12 @@ dmypy.json
 *.txt
 *.pkl
 *.csv
+
+*.pkl
+**/*.pkl
+*.txt
+**/*.txt
+*.pt
+**/*.pt
+*.csv
+**/*.csv
