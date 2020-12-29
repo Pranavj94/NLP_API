@@ -1,9 +1,12 @@
 import numpy as np
+import configs
+import text_utils
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -33,21 +36,25 @@ class BiLSTM(nn.Module):
         conc = self.dropout(conc)
         out = self.out(conc)
         return out
+    
 
-def predict_single(x):    
+def predict_single(x,model,tokenizer,le):    
     # clean the text
-    x=processor.process_text(x)
+    processor=text_utils.text_processor()
+    x = processor.process_text(x)
     # tokenize
     x = tokenizer.texts_to_sequences([x])
     # pad
-    x = pad_sequences(x, maxlen=maxlen)
+    x = pad_sequences(x, maxlen=configs.maxlen)
     # create dataset
     x = torch.tensor(x, dtype=torch.long)
 
-    pred = model(x).detach()
-    pred = F.softmax(pred).cpu().numpy()
+    out = model(x).detach()
+    soft_out = F.softmax(out).cpu().numpy()
 
-    pred = pred.argmax(axis=1)
+    pred = soft_out.argmax(axis=1)
+    prob = np.amax(soft_out)
 
     pred = le.classes_[pred]
-    return pred[0]
+    return (pred[0],round(float(prob),2))
+
